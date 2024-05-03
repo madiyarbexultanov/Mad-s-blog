@@ -1,0 +1,50 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'vendor/css/index.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="col-3 p-5">
+    <div class="list-group-item">
+        {% for category in categories %}
+        <div class="cat">
+        <a href="{% url 'posts:category' category_id=category.id %}" class="list-group-item list-group-item-action" aria-current="true">
+            {{ category.name }}
+        </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<div class="col-6 p-5">
+    {% for post in object_list %}
+    <a href="{% url 'posts:post_page' post_id=post.id %}">
+        <div class="row p-3">
+            <div class="col-8">
+                <h1>{{ post.title }}</h1>
+                <h2>{{ post.author }}</h2>
+                <p>{{ post.created_on }}</p>
+            </div>
+            <div class="col-4 post">
+                <img class="card-img" src="{{ post.image.url }}">
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+    {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+    <a href="{% url 'posts:create_post' %}" class="btn btn-success">Create a New Post</a>
+    </div>
+    {% endif %}
+    
+</div>
+
+
+    <div class="col-3 p-5">
+
+    </div>
+
+    {% endblock %}

@@ -1,0 +1,52 @@
+body {
+   color:#F05941;
+       /* fallback for old browsers */
+    background: #6a11cb;
+    
+       /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+       
+       /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #22092C, #512B81);
+    
+    }
+
+
+
+.nav-link {
+    color: #F05941;
+    font-size: 140%;
+}
+
+.navbar {
+    padding: 0.5% 5%;
+}
+
+i {
+    font-size: 150%;
+    margin-right: 2%;
+}
+
+a {
+    text-decoration: none !important;
+    color: #F05941
+  }
+
+a:hover {
+    color: rgb(174, 213, 66);
+}
+
+
+.card-img {
+    border-radius: 20%;
+}
+
+.list-group-item {
+    background-color: inherit;
+    border: none;
+}
+
+.cat {
+    margin: 2% 0;
+    border: hidden;
+}

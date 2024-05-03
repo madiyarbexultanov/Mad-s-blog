@@ -1,0 +1,28 @@
+{% extends 'posts/base.html' %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'vendor/css/post.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<div class="col-3 p-5">
+    Заполнить
+</div>
+
+<div class="col-6 p-5">z
+    <div class="container">
+            <h1>{{post.title}}</h1>
+            <h2>{{post.author}}</h2>
+            <p>{{post.body}}</p>
+            <img class="card-img-top" src="{{ post.image.url }}">
+    </div>
+</div>
+
+
+    <div class="col-3 p-5">
+        Coming soon
+    </div>
+
+    {% endblock %}
