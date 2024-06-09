@@ -11,18 +11,25 @@
     Заполнить
 </div>
 
-<div class="col-6 p-5">z
+<div class="col-6 p-5">
     <div class="container">
-            <h1>{{post.title}}</h1>
-            <h2>{{post.author}}</h2>
-            <p>{{post.body}}</p>
+            <h1 class="post-title">{{post.title|safe}}</h1>
+            <span class="author-name">Author: {{post.author}}</span>
+            <div class="post-text">{{post.body|linebreaks}}</div>
             <img class="card-img-top" src="{{ post.image.url }}">
     </div>
 </div>
 
 
-    <div class="col-3 p-5">
-        Coming soon
+<div class="col-3 p-5">
+    <div class="d-flex">
+        <form method="post" action="{% url 'posts:delete_post' post.id %}" class="mx-2">
+            {% csrf_token %}
+            <input type="submit" value="Delete Post" class="btn btn-danger">
+        </form>
+        <a class="btn btn-warning" href="{% url 'posts:update_post' post_id=post.id %}">Update Post</a>
     </div>
+</div>
+    
 
     {% endblock %}

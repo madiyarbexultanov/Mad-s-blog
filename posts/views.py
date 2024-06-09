@@ -1,13 +1,13 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import FormMixin
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import FormMixin, CreateView, DeleteView, UpdateView
 from django.db.models import Q 
+from django.urls import reverse_lazy
 
 
 from posts.models import Post, PostCategory, Comment
 from common.views import TitleMixin
-from posts.forms import PostCreateForm
+from posts.forms import PostCreateForm, PostUpdateForm
 
 
 class IndexListView(TitleMixin, ListView):
@@ -58,3 +58,17 @@ class PostCreateView(TitleMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user  # Set the author of the post to the current user
         return super().form_valid(form)
+    
+class PostUpdateView(UpdateView):
+    template_name = 'posts/post_update.html'
+    form_class = PostUpdateForm
+    model = Post
+    pk_url_kwarg = 'post_id'
+    template_name_suffix = '_update_form'
+    success_url = reverse_lazy('index')
+    
+
+class PostDeleteView(DeleteView):
+    model = Post
+    pk_url_kwarg = 'post_id'
+    success_url = reverse_lazy("index")

@@ -2,3 +2,11 @@
     margin: 5% 0;
 }
 
+.post-text {
+    text-align: justify;
+    padding: 5% 0;
+}
+
+.post-title {
+    text-align: center;
+}

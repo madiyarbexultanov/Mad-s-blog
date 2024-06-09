@@ -1,15 +1,33 @@
 from django import forms
-from .models import Comment, Post
+from .models import Comment, Post, PostCategory
 
 class PostCreateForm(forms.ModelForm):
+    categories = forms.ModelMultipleChoiceField(
+    queryset=PostCategory.objects.all(),
+    widget=forms.SelectMultiple(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Post
-        fields = ('title', 'author', 'body', 'image', 'categories')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'form-control', 'autocomplete': 'off'})
-
-            self.fields['body'].widget.attrs.update({'class': 'form-control django_ckeditor_5'})
-            self.fields['body'].required = False
+        fields = ('title', 'body', 'image', 'categories',)
+        labels = {
+            'body': 'Content', 
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Write your content here...', 'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+        
+class PostUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title', 'body', 'image', 'categories',)
+        labels = {
+            'body': 'Content', 
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Write your content here...', 'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'categories': forms.SelectMultiple(attrs={'class': 'form-control'})
+        }
