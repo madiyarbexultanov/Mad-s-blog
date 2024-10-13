@@ -1,0 +1,49 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{%block css%}
+<link href="{% static 'vendor/css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h1 class="h3">{{ user_profile.username }}'s Profile</h1>
+                        {% if user_profile.image %}
+                            <img src="{{ user_profile.image.url }}" class="rounded-circle img-fluid" style="max-width: 150px;" alt="Profile Image">
+                        {% else %}
+                            <img src="{% static 'img/default_profile.png' %}" class="rounded-circle img-fluid" style="max-width: 150px;" alt="Default Profile Image">
+                        {% endif %}
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.first_name.label_tag }}
+                            {{ form.first_name }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.last_name.label_tag }}
+                            {{ form.last_name }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.image.label_tag }}
+                            {{ form.image }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

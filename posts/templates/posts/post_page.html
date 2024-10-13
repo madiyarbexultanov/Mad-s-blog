@@ -5,31 +5,66 @@
 <link href="{% static 'vendor/css/post.css' %}" rel="stylesheet">
 {% endblock %}
 
-
 {% block content %}
-<div class="col-3 p-5">
-    Заполнить
-</div>
+<div class="container">
+    <div class="row">
+        <!-- Optional left column content -->
+        <div class="col-12 col-md-3 p-3">
+            <!-- Placeholder for potential future content -->
+        </div>
 
-<div class="col-6 p-5">
-    <div class="container">
-            <h1 class="post-title">{{post.title|safe}}</h1>
-            <span class="author-name">Author: {{post.author}}</span>
-            <div class="post-text">{{post.body|linebreaks}}</div>
-            <img class="card-img-top" src="{{ post.image.url }}">
+        <!-- Main content -->
+        <div class="col-12 col-md-6 p-3">
+            <div class="container">
+                <h1 class="post-title">{{ post.title|safe }}</h1>
+                <span class="author-name">Author: {{ post.author }}</span>
+                <div class="post-text">{{ post.body|linebreaks }}</div>
+                {% if post.image %}
+                    <img class="card-img-top img-fluid" src="{{ post.image.url }}" alt="Post image">
+                {% endif %}
+            </div>
+            <br><br>
+            <hr>
+            {% if user.is_authenticated %}
+            <h4>Create Comment</h4>
+            <div class="container d-flex justify-content-center mt-5">
+                <div class="card w-100">
+                    <div class="form-group">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="d-flex justify-content-end">
+                                <a href="/" class="btn btn-outline-warning me-2">Cancel</a>
+                                <button type="submit" class="btn btn-outline-success">Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <h2>Comments</h2>
+            {% if not post.comments.exists %}
+                <p>No Comments Yet...</p>
+            {% else %}
+                {% for comment in post.comments.all %}
+                    <strong>{{ comment.author }} - {{ comment.created_on }}</strong>
+                    <p>{{ comment.content|linebreaks }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Right column for actions -->
+        <div class="col-12 col-md-3 p-3">
+            {% if user.superuser or user.is_staff %}
+            <div class="d-flex flex-column">
+                <form method="post" action="{% url 'posts:delete_post' post.id %}" class="mb-2">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete Post" class="btn btn-danger w-100">
+                </form>
+                <a class="btn btn-warning w-100" href="{% url 'posts:update_post' post.id %}">Update Post</a>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
-
-
-<div class="col-3 p-5">
-    <div class="d-flex">
-        <form method="post" action="{% url 'posts:delete_post' post.id %}" class="mx-2">
-            {% csrf_token %}
-            <input type="submit" value="Delete Post" class="btn btn-danger">
-        </form>
-        <a class="btn btn-warning" href="{% url 'posts:update_post' post_id=post.id %}">Update Post</a>
-    </div>
-</div>
-    
-
-    {% endblock %}
+{% endblock %}

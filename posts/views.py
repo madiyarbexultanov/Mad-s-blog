@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 
 from posts.models import Post, PostCategory, Comment
 from common.views import TitleMixin
-from posts.forms import PostCreateForm, PostUpdateForm
+from posts.forms import PostCreateForm, PostUpdateForm, CommentCreateForm
 
 
 class IndexListView(TitleMixin, ListView):
@@ -30,23 +30,46 @@ class IndexListView(TitleMixin, ListView):
                 Q(title__icontains=search_query) | Q(author__username__icontains=search_query)
             )
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
 
 
 
-class PostPageView(TitleMixin, DetailView):
+class PostPageView(TitleMixin, FormMixin, DetailView):
     model = Post
     template_name = 'posts/post_page.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
     title = 'Blog Page'
+    form_class = CommentCreateForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = self.object
-        context['author'] = post.author
-        context['body'] = post.body
-        context['image'] = post.image.url
+        context['form'] = self.get_form()
+        context['author'] = self.object.author
+        context['body'] = self.object.body
+        context['image'] = self.object.image.url if self.object.image else None
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.post = self.object
+        form.instance.author = self.request.user  # Assuming the author is the logged-in user
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('posts:post_page', kwargs={'post_id': self.object.id})
 
 class PostCreateView(TitleMixin, CreateView):
     model = Post
@@ -66,6 +89,7 @@ class PostUpdateView(UpdateView):
     pk_url_kwarg = 'post_id'
     template_name_suffix = '_update_form'
     success_url = reverse_lazy('index')
+    title = 'Update Post'
     
 
 class PostDeleteView(DeleteView):

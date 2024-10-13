@@ -31,3 +31,12 @@ class PostUpdateForm(forms.ModelForm):
             'image': forms.FileInput(attrs={'class': 'form-control'}),
             'categories': forms.SelectMultiple(attrs={'class': 'form-control'})
         }
+        
+class CommentCreateForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Write your comment here...', 'class': 'form-control'}),
+        }

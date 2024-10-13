@@ -44,3 +44,16 @@ class UserRegistrationForm(UserCreationForm):
         record = EmailVerification.objects.create(code = uuid.uuid4(), user = user, expiration = expiration)
         record.send_verification_email()
         return user
+    
+    
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'image']
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['image'].widget.attrs.update({'class': 'form-control-file'})

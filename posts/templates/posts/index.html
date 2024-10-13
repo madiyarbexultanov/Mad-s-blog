@@ -6,53 +6,56 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-3 p-5">
-    <div class="list-group ">
-        {% for category in categories %}
-        <div class="cat">
-        <a href="{% url 'posts:category' category_id=category.id %}" class="list-group-item list-group-item-action list-group-item-info" aria-current="true">
-            {{ category.name }}
-        </a>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-12 col-md-3 p-3 d-flex justify-content-center">
+            <div class="list-group">
+                <h3> Categories </h3>
+                {% for category in categories %}
+                <div class="cat">
+                    <a href="{% url 'posts:category' category_id=category.id %}" class="list-group-item list-group-item-action list-group-item-info" aria-current="true">
+                        {{ category.name }}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
-    </div>
 
-</div>
-
-<div class="col-6 p-5">
-    <div class="list-group">
-    {% for post in object_list %}
-<a href="{% url 'posts:post_page' post_id=post.id %}" class="list-group-item-action">
-    <div class="row p-3 position-relative">
-        <div class="col-8">
-            <h1 class="post-title">{{ post.title }}</h1>
-            <h2>Author: <span class="author-name">{{post.author}}</span></h2>
-            <p>{{ post.created_on }}</p>
+        <!-- Main Content -->
+        <div class="col-12 col-md-6 p-3">
+            <div class="list-group">
+                {% for post in object_list %}
+                <a href="{% url 'posts:post_page' post_id=post.id %}" class="list-group-item-action">
+                    <div class="row p-3 position-relative">
+                        <div class="col-8">
+                            <h1 class="post-title">{{ post.title }}</h1>
+                            <h2>Author: <span class="author-name">{{ post.author }}</span></h2>
+                            <p>{{ post.created_on }}</p>
+                        </div>
+                        <div class="col-4 position-relative">
+                            <img class="card-img img-fluid" src="{{ post.image.url }}" alt="Post Image">
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
         </div>
-        <div class="col-4 position-relative">
-            <img class="card-img" src="{{ post.image.url }}">
-        </div>  
-    </div>
-</a>
-    {% endfor %}
 
-</div>
-</div>
-
-
-    <div class="col-3 p-5">
-        <div class="mb-4">
-        <form class="d-flex me-2 mt-2" method="GET" action="{% url 'index' %}" role="search">
-            <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
-            <button class="btn btn-dark" type="submit">Search</button>
-        </form>
-        </div>       
+        <!-- Sidebar -->
+        <div class="col-12 col-md-3 p-3">
+            <div class="mb-4">
+                <form class="d-flex me-2 mt-2" method="GET" action="{% url 'index' %}" role="search">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-dark" type="submit">Search</button>
+                </form>
+            </div>
             {% if user.is_authenticated %}
             <div class="d-flex justify-content-center mt-5" style="flex-direction: column;">
-            <a href="{% url 'posts:create_post' %}" class="btn btn-outline-success">Create a New Post</a>
+                <a href="{% url 'posts:create_post' %}" class="btn btn-outline-success">Create a New Post</a>
             </div>
             {% endif %}
-
-
+        </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}

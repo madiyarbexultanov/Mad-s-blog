@@ -10,6 +10,25 @@ body {
     margin: 0;
     }
 
-.row {
-    text-align: center;
+
+.card {
+    border-radius: 10px;
+}
+
+.card-body h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.list-group-item {
+    background-color: transparent;
+}
+
+.list-group-item strong {
+    color: #343a40;
+}
+
+img.rounded-circle {
+    border: 1px solid #6c757d;
+    padding: 5px;
 }

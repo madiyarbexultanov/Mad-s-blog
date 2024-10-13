@@ -1,23 +1,22 @@
 {% extends 'posts/base.html' %}
 {% load static %}
 
-
 {% block css %}
-
+<!-- Add any custom CSS here -->
 {% endblock %}
 
 {% block content %}
 <div class="container d-flex justify-content-center mt-5">
-    <div class="card" style="width: 50%;">
-        <div class="form-group">
+    <div class="card w-100 w-md-50">
+        <div class="form-group p-3">
             <div class="card-title nth-card-title">
                 <h4>Create Post</h4>
             </div>
             <form method="POST" action="{% url 'posts:create_post' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <div class="d-flex justify-content-end">
-                    <a href="/" class="btn btn-outline-warning">Cancel</a>
+                <div class="d-flex justify-content-end mt-3">
+                    <a href="/" class="btn btn-outline-warning me-2">Cancel</a>
                     <button type="submit" class="btn btn-outline-success">Create Post</button>
                 </div>
             </form>

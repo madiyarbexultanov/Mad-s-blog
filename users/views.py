@@ -5,9 +5,12 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import HttpResponseRedirect
+from django.views.generic import DetailView
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import HttpResponseRedirect, redirect
+from django.utils.decorators import method_decorator
 
-from users.forms import UserLoginForm, UserRegistrationForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from users.models import User, EmailVerification
 from common.views import TitleMixin
 
@@ -16,21 +19,6 @@ class UserLoginView(TitleMixin, LoginView):
     form_class = UserLoginForm
     title = 'Sign In'
     
-
-# def login(request):
-#     if request.method == "POST":
-#         form = UserLoginForm(data = request.POST)
-#         if form.is_valid():
-#             username = request.POST['username']
-#             password = request.POST['password']
-#             user = auth.authenticate(username=username, password = password)
-#             if user:
-#                 auth.login(request, user)
-#                 return HttpResponseRedirect(reverse('index'))
-#     else:
-#         form = UserLoginForm()
-#     context = {'form': form}
-#     return render(request, 'users/login.html', context)
 
 
 class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
@@ -41,21 +29,33 @@ class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     success_message = 'Congrats! You are successfully registrated!'
     title = 'Registration'
 
-# def registration(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Congrats! You are successfully registrated!')
-#             return HttpResponseRedirect(reverse('users:login'))
-#     else:
-#         form = UserRegistrationForm()
-#     context = {'form': form}
-#     return render(request, 'users/registration.html', context)
 
-class ProfileView(TitleMixin, TemplateView):
-    template_name = 'users/profile.html'
-    title = 'About Me'
+@method_decorator(login_required, name='dispatch')
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'users/user_profile.html'
+    context_object_name = 'user_profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.method == 'POST':
+            context['form'] = UserProfileForm(self.request.POST, self.request.FILES, instance=self.request.user)
+        else:
+            context['form'] = UserProfileForm(instance=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = UserProfileForm(request.POST, request.FILES, instance=self.request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('users:user_profile', pk=request.user.pk)  # редирект на страницу профиля после успешного сохранения
+        else:
+            return self.get(request, *args, **kwargs)  # если форма невалидна, отображаем страницу заново с ошибками
+
+@login_required
+def my_profile(request):
+    return redirect('user_profile', pk=request.user.pk)
+
 
 class EmailVerificationView(TitleMixin, TemplateView):
     template_name = 'users/verification.html'
